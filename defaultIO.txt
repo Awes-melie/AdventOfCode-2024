@@ -1,0 +1,5 @@
+module Main where
+    main :: IO ()
+    main = do fileContents <- readFile "numbers.txt"
+              let distance = calculateDistance fileContents 
+              putStr distance
