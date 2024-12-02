@@ -9,22 +9,22 @@ module Main where
                let distance = (findSimilarity . convertToLists) fileContents
                print distance
 
-    convertToLists :: String -> ([Integer],[Integer])
+    convertToLists :: String -> ([Int],[Int])
     convertToLists list = zipMap pairs
         where
             lines = wordsWhen (=='\n') list
             pairs = map (splitStringPair ' ') lines
-            zipMap :: [(String, String)] -> ([Integer], [Integer])
+            zipMap :: [(String, String)] -> ([Int], [Int])
             zipMap [] = ([0], [0])
             zipMap list = (readLeft list, readRight list)
                 where
-                    readLeft :: [(String, String)] -> [Integer]
+                    readLeft :: [(String, String)] -> [Int]
                     readLeft [] = []
-                    readLeft (x:xs) = (read (fst x) :: Integer) : readLeft xs
+                    readLeft (x:xs) = (read (fst x) :: Int) : readLeft xs
 
-                    readRight :: [(String, String)] -> [Integer]
+                    readRight :: [(String, String)] -> [Int]
                     readRight [] = []
-                    readRight (x:xs) = (read (snd x) :: Integer) : readRight xs
+                    readRight (x:xs) = (read (snd x) :: Int) : readRight xs
 
     splitString :: Char -> String -> [String]
     splitString _ "" = []
@@ -45,19 +45,19 @@ module Main where
                 | c == char = (pre ++ [x], xs)
                 | otherwise = splitString' char (pre ++ [x], c:xs)
 
-    findDistance :: ([Integer],[Integer]) -> Integer
+    findDistance :: ([Int],[Int]) -> Int
     findDistance list = sum (diffZip sorted)
         where
             sorted = (sort (fst list), sort (snd list))
-            diffZip :: ([Integer],[Integer]) -> [Integer]
+            diffZip :: ([Int],[Int]) -> [Int]
             diffZip (listA, listB) = [abs (x - y) | (x,y) <- zip listA listB]
 
     -- breaks if theres a 0 loll but im not doing allthat
-    findSimilarity :: ([Integer],[Integer]) -> Integer
+    findSimilarity :: ([Int],[Int]) -> Int
     findSimilarity ([], _) = 0
     findSimilarity (l:ls,right) = countLs l right + findSimilarity (ls, right)
         
-    countLs :: Integer -> [Integer] -> Integer
+    countLs :: Int -> [Int] -> Int
     countLs _ [] = 0
     countLs i (x:xs)
         | x == i = i + countLs i xs
