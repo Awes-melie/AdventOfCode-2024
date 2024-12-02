@@ -1,11 +1,13 @@
 module Main where
     main :: IO ()
     main = do fileContents <- readFile "numbers.txt"
-              let distance = calculateDistance fileContents
+              let distance = (findDistance . convertToLists) fileContents
               print distance
 
-    calculateDistance :: String -> Integer
-    calculateDistance = findDistance . convertToLists
+    main2 :: IO ()
+    main2 = do fileContents <- readFile "numbers.txt"
+               let distance = (findSimilarity . convertToLists) fileContents
+               print distance
 
     convertToLists :: String -> ([Integer],[Integer])
     convertToLists list = zipMap pairs
@@ -49,6 +51,17 @@ module Main where
             sorted = (sort (fst list), sort (snd list))
             diffZip :: ([Integer],[Integer]) -> [Integer]
             diffZip (listA, listB) = [abs (x - y) | (x,y) <- zip listA listB]
+
+    -- breaks if theres a 0 loll but im not doing allthat
+    findSimilarity :: ([Integer],[Integer]) -> Integer
+    findSimilarity ([], _) = 0
+    findSimilarity (l:ls,right) = countLs l right + findSimilarity (ls, right)
+        
+    countLs :: Integer -> [Integer] -> Integer
+    countLs _ [] = 0
+    countLs i (x:xs)
+        | x == i = i + countLs i xs
+        | otherwise = countLs i xs
 
 --- PRELUDE, not working for some reason --
     sort = sortBy compare
