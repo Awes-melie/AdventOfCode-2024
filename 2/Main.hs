@@ -4,6 +4,11 @@ module Main where
               let safe = (countSafe . convertToLists) fileContents
               print safe
 
+    main2 :: IO ()
+    main2 = do fileContents <- readFile "numbers.txt"
+               let safe = (countSafeDampened . convertToLists) fileContents
+               print safe
+
     -- so much more concise than day one oh my godd, idk what i was cooking but i'm locked back in
     convertToLists :: String -> [[Int]]
     convertToLists list = numbers
@@ -14,6 +19,17 @@ module Main where
 
     countSafe :: [[Int]] -> Int
     countSafe = length . filter isSafe
+
+    countSafeDampened :: [[Int]] -> Int
+    countSafeDampened = length . filter isSafeDampened
+
+    isSafeDampened :: [Int] -> Bool
+    isSafeDampened list = any isSafe [ removeFrom i list | i <- [0 .. length list] ]
+        where
+            removeFrom :: Int -> [Int] -> [Int]
+            removeFrom i (s:sx)
+                | i == 0 = sx
+                | otherwise = s : removeFrom (i - 1) sx
 
     isSafe :: [Int] -> Bool
     isSafe (a:b:sx)
